@@ -1,36 +1,41 @@
 """picdumpchecker.py
-author: northalpha
-desc: bla"""
+author: https://twitter.com/northalpha
+desc: A simple web checker if the picdump from www.bildschirmarbeiter.com is beeing uploaded, if yes: send me an email"""
 
 import time
 import requests
 import smtplib
 
-#Wir bauen uns eine URL
+### Config ###
+
+my_email = "mymailadresse@gmail.com"
+my_pass = "super_secret_in_here"
+
+#Lets create some URL
 picdump_url = "http://www.bildschirmarbeiter.com/pic/bildschirmarbeiter_-_picdump_" + time.strftime("%d.%m.%Y") 
 
-#Wir holen uns di URL
+#Lets get that URLs
 r = requests.get(picdump_url)
 
-def sendMail(msg):
+def sendMail(msg, url):
 
-        #Wir bauen uns ein Server Object
+        #Create an Server Object
         server = smtplib.SMTP('smtp.gmail.com', 587)
 
         #Do the TLS server connection
         server.starttls()
 
         #Next, log in to the server
-        server.login("meine_email_adresse", "mein_passwort")
+        server.login(my_email, my_pass)
 
         #Send the mail
-        content = "\n" + msg + " " + picdump_url  # The /n separates the message from the headers
-        server.sendmail("picdumpalert@gmail.com", "meine_email_adresse", content)
+        content = "\n" + msg + " " + url  # The /n separates the message from the headers
+        server.sendmail("picdumpalert@gmail.com", my_email , content)
         server.quit()
 
 if r.status_code != 200:
-        print("Oh yes")
-	sendMail("PICDUUUUUUUUUMP")
+        print("Oh noes")
+
 else:
-        #sendMail("Keine URL kein Fun")
-	print("Oh noes") 
+	sendMail("PICDUUUUUUUUUMP", picdump_url)
+	print("Oh yes") 
