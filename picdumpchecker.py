@@ -17,7 +17,8 @@ picdump_url = "http://www.bildschirmarbeiter.com/pic/bildschirmarbeiter_-_picdum
 print(time.strftime("%A"))
 already_run = False
 
-if (time.strftime("%A")) == "Friday" and already_run is False:
+#Check if the Day is Day 5 in week == Friday
+if (time.strftime("%w")) == "5" and already_run is False:
 
 	#Lets get that URLs
 	r = requests.get(picdump_url)
