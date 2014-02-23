@@ -14,28 +14,41 @@ my_pass = "super_secret_in_here"
 #Lets create some URL
 picdump_url = "http://www.bildschirmarbeiter.com/pic/bildschirmarbeiter_-_picdump_" + time.strftime("%d.%m.%Y") 
 
-#Lets get that URLs
-r = requests.get(picdump_url)
+print(time.strftime("%A"))
+already_run = False
 
-def sendMail(msg, url):
+if (time.strftime("%A")) == "Friday" and already_run is False:
 
-        #Create an Server Object
-        server = smtplib.SMTP('smtp.gmail.com', 587)
+	#Lets get that URLs
+	r = requests.get(picdump_url)
 
-        #Do the TLS server connection
-        server.starttls()
+	def sendMail(msg, url):
 
-        #Next, log in to the server
-        server.login(my_email, my_pass)
+        	#Create an Server Object
+        	server = smtplib.SMTP('smtp.gmail.com', 587)
 
-        #Send the mail
-        content = "\n" + msg + " " + url  # The /n separates the message from the headers
-        server.sendmail("picdumpalert@gmail.com", my_email , content)
-        server.quit()
+        	#Do the TLS server connection
+        	server.starttls()
 
-if r.status_code != 200:
-        print("Oh noes")
+        	#Next, log in to the server
+        	server.login(my_email, my_pass)
+
+        	#Send the mail
+        	content = "\n" + msg + " " + url  # The /n separates the message from the headers
+        	server.sendmail("picdumpalert@gmail.com", my_email , content)
+        	server.quit()
+
+	if r.status_code != 200:
+        	print("Oh noes")
+		already_run = False
+
+	else:
+		sendMail("PICDUUUUUUUUUMP", picdump_url)
+		print("Oh yes")
+		already_run = True 
 
 else:
-	sendMail("PICDUUUUUUUUUMP", picdump_url)
-	print("Oh yes") 
+		if time.strftime("%A") != "Friday":
+			print("There is no Picdump on " + time.strftime("%A") + "s") 
+		else:
+			print("Already run")
