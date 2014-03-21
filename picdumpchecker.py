@@ -14,11 +14,8 @@ my_pass = "super_secret_in_here"
 #Lets create some URL
 picdump_url = "http://www.bildschirmarbeiter.com/pic/bildschirmarbeiter_-_picdump_" + time.strftime("%d.%m.%Y") 
 
-print(time.strftime("%A"))
-already_run = False
-
 #Check if the Day is Day 5 in week == Friday
-if (time.strftime("%w")) == "5" and already_run is False:
+if (time.strftime("%w")) == "5":
 
 	#Lets get that URLs
 	r = requests.get(picdump_url)
@@ -41,12 +38,10 @@ if (time.strftime("%w")) == "5" and already_run is False:
 
 	if r.status_code != 200:
         	print("Oh noes")
-		already_run = False
 
 	else:
 		sendMail("PICDUUUUUUUUUMP", picdump_url)
 		print("Oh yes")
-		already_run = True 
 
 else:
 		if time.strftime("%A") != "Friday":
