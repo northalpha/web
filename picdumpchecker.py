@@ -2,6 +2,8 @@
 author: https://twitter.com/northalpha
 desc: A simple web checker if the picdump from www.bildschirmarbeiter.com is beeing uploaded, if yes: send me an email"""
 
+import os.path
+import sys
 import time
 import requests
 import smtplib
@@ -11,12 +13,24 @@ import smtplib
 my_email = "mymailadresse@gmail.com"
 my_pass = "super_secret_in_here"
 
-#Lets create some URL
-picdump_url = "http://www.bildschirmarbeiter.com/pic/bildschirmarbeiter_-_picdump_" + time.strftime("%d.%m.%Y") 
+### Get Time ###
+now = time
 
-#Check if the Day is Day 5 in week == Friday
-if (time.strftime("%w")) == "5":
+### Check for Token ###
+if (os.path.isfile('/tmp/' + now.strftime("%d.%m.%Y") + '.done')):
+	print("Already send an eMail today... Goodbye!")
+	sys.exit(0)
 
+
+### Create URL ###
+picdump_url = "http://www.bildschirmarbeiter.com/pic/bildschirmarbeiter_-_picdump_" + now.strftime("%d.%m.%Y") 
+
+### Leave if Today is Not Friday :-( ###
+if (now.strftime("%w")) != "5":
+	print("There is no Picdump on " + now.strftime("%A") + "s")
+	sys.exit(0)
+
+### Today is Friday (Yippee!!!) ###
 	#Lets get that URLs
 	r = requests.get(picdump_url)
 
@@ -36,15 +50,7 @@ if (time.strftime("%w")) == "5":
         	server.sendmail("picdumpalert@gmail.com", my_email , content)
         	server.quit()
 
-	if r.status_code != 200:
-        	print("Oh noes")
-
-	else:
+	if r.status_code == 200:
 		sendMail("PICDUUUUUUUUUMP", picdump_url)
-		print("Oh yes")
-
-else:
-		if time.strftime("%A") != "Friday":
-			print("There is no Picdump on " + time.strftime("%A") + "s") 
-		else:
-			print("Already run")
+		# Write token
+		open('/tmp/' + now.strftime("%d.%m.%Y") + '.done', 'a').close()
